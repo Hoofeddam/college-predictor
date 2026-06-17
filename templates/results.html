@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Results</title>
+</head>
+
+<body style="font-family: Arial; max-width: 900px; margin: auto;">
+
+    <h1>Eligible Colleges</h1>
+
+    {% if cutoffs %}
+
+        {% for cutoff in cutoffs %}
+
+            <div style="
+                border:1px solid #ddd;
+                padding:15px;
+                margin-bottom:15px;
+                border-radius:10px;
+            ">
+
+                <h2>
+                    <a href="/college/{{ cutoff.branch.college.id }}">
+                        {{ cutoff.branch.college.name }}
+                    </a>
+                </h2>
+
+                <p>
+                    <strong>Branch:</strong>
+                    {{ cutoff.branch.branch_name }}
+                </p>
+
+                <p>
+                    <strong>Exam:</strong>
+                    {{ cutoff.exam.name }}
+                </p>
+
+                <p>
+                    <strong>Category:</strong>
+                    {{ cutoff.category.name }}
+                </p>
+
+                <p>
+                    <strong>Quota:</strong>
+                    {{ cutoff.quota.name }}
+                </p>
+
+                <p>
+                    <strong>Round:</strong>
+                    {{ cutoff.round.round_no }}
+                </p>
+
+                <p>
+                    <strong>Year:</strong>
+                    {{ cutoff.year }}
+                </p>
+
+                <p>
+                    <strong>Avg Package:</strong>
+                    {{ cutoff.branch.avg_package }} LPA
+                </p>
+
+                <p>
+                    <strong>Median Package:</strong>
+                    {{ cutoff.branch.median_package }} LPA
+                </p>
+
+                <p>
+                    <strong>Placement Rate:</strong>
+                    {{ cutoff.branch.placement_rate }}%
+                </p>
+
+                <p>
+                    <strong>Closing Rank:</strong>
+                    {{ cutoff.closing_rank }}
+                </p>
+
+                <p>
+                    <strong>NIRF Rank:</strong>
+                    {{ cutoff.branch.college.nirf_rank }}
+                </p>
+
+                <p>
+                    <strong>Fees:</strong>
+                    ₹{{ cutoff.branch.college.fees }}
+                </p>
+
+                <p>
+                    <strong>Hostel Fees:</strong>
+                    ₹{{ cutoff.branch.college.hostel_fees }}
+                </p>
+
+                <p>
+                    <strong>Website:</strong>
+                    <a href="{{ cutoff.branch.college.website }}" target="_blank">
+                        Visit Website
+                    </a>
+                </p>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <h2>No colleges found for the selected criteria.</h2>
+
+    {% endif %}
+
+    <br>
+
+    <a href="/">← Back to Predictor</a>
+
+</body>
+</html>

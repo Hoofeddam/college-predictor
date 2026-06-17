@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Compare Branches</title>
+</head>
+<body>
+
+    <h1>Compare Branches</h1>
+
+    <form action="/compare-result">
+
+        <label>Branch 1:</label>
+
+        <select name="branch1">
+
+            {% for branch in branches %}
+
+                <option value="{{ branch.id }}">
+                    {{ branch.college.name }} - {{ branch.branch_name }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <br><br>
+
+        <label>Branch 2:</label>
+
+        <select name="branch2">
+
+            {% for branch in branches %}
+
+                <option value="{{ branch.id }}">
+                    {{ branch.college.name }} - {{ branch.branch_name }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <br><br>
+
+        <button type="submit">
+            Compare
+        </button>
+
+    </form>
+
+</body>
+</html>

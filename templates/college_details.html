@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ college.name }}</title>
+</head>
+
+<body style="font-family: Arial; max-width: 900px; margin: auto;">
+
+    <h1>{{ college.name }}</h1>
+
+    <p>
+        <strong>Location:</strong>
+        {{ college.location }}
+    </p>
+
+    <p>
+        <strong>State:</strong>
+        {{ college.state }}
+    </p>
+
+    <p>
+        <strong>NIRF Rank:</strong>
+        {{ college.nirf_rank }}
+    </p>
+
+    <p>
+        <strong>Fees:</strong>
+        ₹{{ college.fees }}
+    </p>
+
+    <p>
+        <strong>Hostel Fees:</strong>
+        ₹{{ college.hostel_fees }}
+    </p>
+
+    <p>
+        <strong>Website:</strong>
+        <a href="{{ college.website }}" target="_blank">
+            Visit Website
+        </a>
+    </p>
+
+    <hr>
+
+    <h2>Branches</h2>
+
+    {% for branch in college.branches %}
+
+        <div style="
+            border:1px solid #ddd;
+            padding:15px;
+            margin-bottom:15px;
+            border-radius:10px;
+        ">
+
+            <h3>{{ branch.branch_name }}</h3>
+
+            <p>
+                Avg Package:
+                {{ branch.avg_package }} LPA
+            </p>
+
+            <p>
+                Median Package:
+                {{ branch.median_package }} LPA
+            </p>
+
+            <p>
+                Placement Rate:
+                {{ branch.placement_rate }}%
+            </p>
+
+        </div>
+
+    {% endfor %}
+
+    <a href="/">← Back Home</a>
+
+</body>
+</html>

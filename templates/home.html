@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>College Predictor</title>
+</head>
+<body>
+
+    <h1>College Predictor</h1>
+
+    <form action="/predict" method="GET">
+
+        <label>Exam:</label>
+        <select name="exam" required>
+
+            <option value="" selected disabled>
+                Select Exam
+            </option>
+
+            {% for exam in exams %}
+
+                <option value="{{ exam.name }}">
+                    {{ exam.name }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <br><br>
+
+        <label>Category:</label>
+        <select name="category" required>
+
+            <option value="" selected disabled>
+                Select Category
+            </option>
+
+            {% for category in categories %}
+
+                <option value="{{ category.name }}">
+                    {{ category.name }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <br><br>
+
+        <label>Quota:</label>
+        <select name="quota" required>
+
+            <option value="" selected disabled>
+                Select Quota
+            </option>
+
+            {% for quota in quotas %}
+
+                <option value="{{ quota.name }}">
+                    {{ quota.name }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <br><br>
+
+        <label>Rank:</label>
+        <input type="number" name="rank" required>
+
+        <br><br>
+
+        <button type="submit">Predict</button>
+
+    </form>
+
+</body>
+</html>

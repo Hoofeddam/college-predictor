@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Branch Comparison</title>
+</head>
+
+<body style="font-family: Arial; max-width: 1000px; margin: auto;">
+
+    <h1>Branch Comparison</h1>
+
+    <table border="1" cellpadding="10" cellspacing="0" width="100%">
+
+        <tr>
+            <th>Metric</th>
+            <th>
+                {{ branch1.college.name }}<br>
+                {{ branch1.branch_name }}
+            </th>
+            <th>
+                {{ branch2.college.name }}<br>
+                {{ branch2.branch_name }}
+            </th>
+        </tr>
+
+        <tr>
+            <td>Average Package</td>
+            <td>{{ branch1.avg_package }} LPA</td>
+            <td>{{ branch2.avg_package }} LPA</td>
+        </tr>
+
+        <tr>
+            <td>Median Package</td>
+            <td>{{ branch1.median_package }} LPA</td>
+            <td>{{ branch2.median_package }} LPA</td>
+        </tr>
+
+        <tr>
+            <td>Placement Rate</td>
+            <td>{{ branch1.placement_rate }}%</td>
+            <td>{{ branch2.placement_rate }}%</td>
+        </tr>
+
+        <tr>
+            <td>NIRF Rank</td>
+            <td>{{ branch1.college.nirf_rank }}</td>
+            <td>{{ branch2.college.nirf_rank }}</td>
+        </tr>
+
+        <tr>
+            <td>Fees</td>
+            <td>₹{{ branch1.college.fees }}</td>
+            <td>₹{{ branch2.college.fees }}</td>
+        </tr>
+
+        <tr>
+            <td>Hostel Fees</td>
+            <td>₹{{ branch1.college.hostel_fees }}</td>
+            <td>₹{{ branch2.college.hostel_fees }}</td>
+        </tr>
+
+        <tr>
+            <td>Location</td>
+            <td>{{ branch1.college.location }}</td>
+            <td>{{ branch2.college.location }}</td>
+        </tr>
+
+        <tr>
+            <td>State</td>
+            <td>{{ branch1.college.state }}</td>
+            <td>{{ branch2.college.state }}</td>
+        </tr>
+
+    </table>
+
+    <br>
+
+    <a href="/compare">← Compare Another Pair</a>
+
+</body>
+</html>
