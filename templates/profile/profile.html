@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Profile — College Predictor{% endblock %}
+
+{% block main_class %}narrow{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <p class="eyebrow">Account</p>
+    <h1>Profile</h1>
+</div>
+
+<div class="card">
+    <div class="stat-grid stat-grid-flush">
+        <div>
+            <p class="stat-label">Username</p>
+            <p class="stat-value">{{ user.username }}</p>
+        </div>
+        <div>
+            <p class="stat-label">Email</p>
+            <p class="stat-value">{{ user.email }}</p>
+        </div>
+        <div>
+            <p class="stat-label">Member Since</p>
+            <p class="stat-value">{{ user.created_at.strftime('%d %b %Y') if user.created_at else '—' }}</p>
+        </div>
+    </div>
+</div>
+
+<p class="form-foot">
+    <a href="{{ url_for('dashboard.dashboard') }}">← Back to dashboard</a>
+</p>
+
+{% endblock %}

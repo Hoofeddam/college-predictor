@@ -1,115 +1,84 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Results</title>
-</head>
+{% extends "base.html" %}
 
-<body style="font-family: Arial; max-width: 900px; margin: auto;">
+{% block title %}Eligible Colleges — College Predictor{% endblock %}
 
-    <h1>Eligible Colleges</h1>
+{% block content %}
 
-    {% if cutoffs %}
+<div class="page-header">
+    <p class="eyebrow">Prediction results</p>
+    <h1>Eligible colleges</h1>
+</div>
 
-        {% for cutoff in cutoffs %}
+{% if error %}
+<div class="alert alert-error">{{ error }}</div>
+{% endif %}
 
-            <div style="
-                border:1px solid #ddd;
-                padding:15px;
-                margin-bottom:15px;
-                border-radius:10px;
-            ">
+{% if results %}
 
-                <h2>
-                    <a href="/college/{{ cutoff.branch.college.id }}">
-                        {{ cutoff.branch.college.name }}
-                    </a>
-                </h2>
+<div class="result-list">
+    {% for result in results %}
+    <div class="result-card">
 
-                <p>
-                    <strong>Branch:</strong>
-                    {{ cutoff.branch.branch_name }}
-                </p>
-
-                <p>
-                    <strong>Exam:</strong>
-                    {{ cutoff.exam.name }}
-                </p>
-
-                <p>
-                    <strong>Category:</strong>
-                    {{ cutoff.category.name }}
-                </p>
-
-                <p>
-                    <strong>Quota:</strong>
-                    {{ cutoff.quota.name }}
-                </p>
-
-                <p>
-                    <strong>Round:</strong>
-                    {{ cutoff.round.round_no }}
-                </p>
-
-                <p>
-                    <strong>Year:</strong>
-                    {{ cutoff.year }}
-                </p>
-
-                <p>
-                    <strong>Avg Package:</strong>
-                    {{ cutoff.branch.avg_package }} LPA
-                </p>
-
-                <p>
-                    <strong>Median Package:</strong>
-                    {{ cutoff.branch.median_package }} LPA
-                </p>
-
-                <p>
-                    <strong>Placement Rate:</strong>
-                    {{ cutoff.branch.placement_rate }}%
-                </p>
-
-                <p>
-                    <strong>Closing Rank:</strong>
-                    {{ cutoff.closing_rank }}
-                </p>
-
-                <p>
-                    <strong>NIRF Rank:</strong>
-                    {{ cutoff.branch.college.nirf_rank }}
-                </p>
-
-                <p>
-                    <strong>Fees:</strong>
-                    ₹{{ cutoff.branch.college.fees }}
-                </p>
-
-                <p>
-                    <strong>Hostel Fees:</strong>
-                    ₹{{ cutoff.branch.college.hostel_fees }}
-                </p>
-
-                <p>
-                    <strong>Website:</strong>
-                    <a href="{{ cutoff.branch.college.website }}" target="_blank">
-                        Visit Website
-                    </a>
-                </p>
-
+        <div class="result-top">
+            <div>
+                <h3 class="result-college">
+                    <a href="{{ url_for('college.college_details', college_id=result.college_id) }}">{{ result.college }}</a>
+                </h3>
+                <p class="result-branch">{{ result.branch }}</p>
             </div>
+            <div class="result-tags">
+                <span class="tag">{{ result.exam }}</span>
+                <span class="tag">{{ result.category }} · {{ result.quota }}</span>
+                <span class="tag tag-brass">NIRF #{{ result.nirf_rank }}</span>
+            </div>
+        </div>
 
-        {% endfor %}
+        <p class="meta">Round {{ result.round }}, {{ result.year }}</p>
 
-    {% else %}
+        <div class="stat-grid">
+            <div>
+                <p class="stat-label">Closing Rank</p>
+                <p class="stat-value accent">{{ result.closing_rank }}</p>
+            </div>
+            <div>
+                <p class="stat-label">Avg Package</p>
+                <p class="stat-value">{{ result.avg_package }} LPA</p>
+            </div>
+            <div>
+                <p class="stat-label">Median Package</p>
+                <p class="stat-value">{{ result.median_package }} LPA</p>
+            </div>
+            <div>
+                <p class="stat-label">Placement Rate</p>
+                <p class="stat-value">{{ result.placement_rate }}%</p>
+            </div>
+            <div>
+                <p class="stat-label">Fees</p>
+                <p class="stat-value">₹{{ result.fees }}</p>
+            </div>
+            <div>
+                <p class="stat-label">Hostel Fees</p>
+                <p class="stat-value">₹{{ result.hostel_fees }}</p>
+            </div>
+        </div>
 
-        <h2>No colleges found for the selected criteria.</h2>
+        <div class="result-foot">
+            <a class="save" href="{{ url_for('saved.save_college', college_id=result.college_id) }}">☆ Save college</a>
+            <a class="website" href="{{ result.website }}" target="_blank" rel="noopener">Visit website ↗</a>
+        </div>
 
-    {% endif %}
+    </div>
+    {% endfor %}
+</div>
 
-    <br>
+{% else %}
 
-    <a href="/">← Back to Predictor</a>
+<div class="empty-state">No colleges found for the selected criteria.</div>
 
-</body>
-</html>
+{% endif %}
+
+<p class="form-foot">
+    <a href="{{ url_for('predictor.home') }}">← Back to predictor</a>
+</p>
+
+{% endblock %}

@@ -1,10 +1,14 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, redirect, url_for
+from flask_login import current_user, login_required
+from services.prediction_service import search_colleges
 
 from models import (
+    db,
     Exam,
     Category,
     Quota,
-    Cutoff
+    Cutoff,
+    PredictionHistory
 )
 
 predictor_bp = Blueprint(
@@ -14,6 +18,7 @@ predictor_bp = Blueprint(
 
 
 @predictor_bp.route("/")
+@login_required
 def home():
 
     exams = Exam.query.all()
@@ -31,6 +36,7 @@ def home():
 
 
 @predictor_bp.route("/predict")
+@login_required
 def predict():
 
     exam_name = request.args.get("exam")
@@ -38,31 +44,59 @@ def predict():
     quota_name = request.args.get("quota")
     rank = int(request.args.get("rank"))
 
-    exam = Exam.query.filter_by(
-        name=exam_name
-    ).first()
+    result = search_colleges(
+        exam_name,
+        category_name,
+        quota_name,
+        rank
+    )
 
-    category = Category.query.filter_by(
-        name=category_name
-    ).first()
-
-    quota = Quota.query.filter_by(
-        name=quota_name
-    ).first()
+    exam = result["exam"]
+    category = result["category"]
+    quota = result["quota"]
+    results = result["results"]
 
     if not exam or not category or not quota:
-        return "Invalid Input"
+        return render_template(
+            "predictor/results.html",
+            results=[],
+            error="We couldn't recognise that exam, category or quota. Please try again."
+        )
 
-    cutoffs = Cutoff.query.filter(
-        Cutoff.exam_id == exam.id,
-        Cutoff.category_id == category.id,
-        Cutoff.quota_id == quota.id,
-        Cutoff.closing_rank >= rank
-    ).order_by(
-        Cutoff.closing_rank.asc()
-    ).all()
+    if current_user.is_authenticated:
+
+        prediction = PredictionHistory(
+            user_id=current_user.id,
+            exam_id=exam.id,
+            category_id=category.id,
+            quota_id=quota.id,
+            rank=rank
+        )
+
+        db.session.add(prediction)
+        db.session.commit()
 
     return render_template(
         "predictor/results.html",
-        cutoffs=cutoffs
+        results=results
+    )
+
+
+@predictor_bp.route("/predict-again/<int:prediction_id>")
+@login_required
+def predict_again(prediction_id):
+
+    prediction = PredictionHistory.query.filter_by(
+        id=prediction_id,
+        user_id=current_user.id
+    ).first_or_404()
+
+    return redirect(
+        url_for(
+            "predictor.predict",
+            exam=prediction.exam.name,
+            category=prediction.category.name,
+            quota=prediction.quota.name,
+            rank=prediction.rank
+        )
     )

@@ -1,80 +1,70 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Branch Comparison</title>
-</head>
+{% extends "base.html" %}
 
-<body style="font-family: Arial; max-width: 1000px; margin: auto;">
+{% block title %}Branch Comparison — College Predictor{% endblock %}
 
-    <h1>Branch Comparison</h1>
+{% block content %}
 
-    <table border="1" cellpadding="10" cellspacing="0" width="100%">
+<div class="page-header">
+    <p class="eyebrow">Comparison</p>
+    <h1>Branch comparison</h1>
+</div>
 
-        <tr>
-            <th>Metric</th>
-            <th>
-                {{ branch1.college.name }}<br>
-                {{ branch1.branch_name }}
-            </th>
-            <th>
-                {{ branch2.college.name }}<br>
-                {{ branch2.branch_name }}
-            </th>
-        </tr>
-
-        <tr>
-            <td>Average Package</td>
-            <td>{{ branch1.avg_package }} LPA</td>
-            <td>{{ branch2.avg_package }} LPA</td>
-        </tr>
-
-        <tr>
-            <td>Median Package</td>
-            <td>{{ branch1.median_package }} LPA</td>
-            <td>{{ branch2.median_package }} LPA</td>
-        </tr>
-
-        <tr>
-            <td>Placement Rate</td>
-            <td>{{ branch1.placement_rate }}%</td>
-            <td>{{ branch2.placement_rate }}%</td>
-        </tr>
-
-        <tr>
-            <td>NIRF Rank</td>
-            <td>{{ branch1.college.nirf_rank }}</td>
-            <td>{{ branch2.college.nirf_rank }}</td>
-        </tr>
-
-        <tr>
-            <td>Fees</td>
-            <td>₹{{ branch1.college.fees }}</td>
-            <td>₹{{ branch2.college.fees }}</td>
-        </tr>
-
-        <tr>
-            <td>Hostel Fees</td>
-            <td>₹{{ branch1.college.hostel_fees }}</td>
-            <td>₹{{ branch2.college.hostel_fees }}</td>
-        </tr>
-
-        <tr>
-            <td>Location</td>
-            <td>{{ branch1.college.location }}</td>
-            <td>{{ branch2.college.location }}</td>
-        </tr>
-
-        <tr>
-            <td>State</td>
-            <td>{{ branch1.college.state }}</td>
-            <td>{{ branch2.college.state }}</td>
-        </tr>
-
+<div class="table-wrap">
+    <table class="compare">
+        <thead>
+            <tr>
+                <th>Metric</th>
+                <th class="college">{{ branch1.college.name }}<br>{{ branch1.branch_name }}</th>
+                <th class="college">{{ branch2.college.name }}<br>{{ branch2.branch_name }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">Average Package</th>
+                <td class="data">{{ branch1.avg_package }} LPA</td>
+                <td class="data">{{ branch2.avg_package }} LPA</td>
+            </tr>
+            <tr>
+                <th scope="row">Median Package</th>
+                <td class="data">{{ branch1.median_package }} LPA</td>
+                <td class="data">{{ branch2.median_package }} LPA</td>
+            </tr>
+            <tr>
+                <th scope="row">Placement Rate</th>
+                <td class="data">{{ branch1.placement_rate }}%</td>
+                <td class="data">{{ branch2.placement_rate }}%</td>
+            </tr>
+            <tr>
+                <th scope="row">NIRF Rank</th>
+                <td class="data">{{ branch1.college.nirf_rank }}</td>
+                <td class="data">{{ branch2.college.nirf_rank }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Fees</th>
+                <td class="data">₹{{ branch1.college.fees }}</td>
+                <td class="data">₹{{ branch2.college.fees }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Hostel Fees</th>
+                <td class="data">₹{{ branch1.college.hostel_fees }}</td>
+                <td class="data">₹{{ branch2.college.hostel_fees }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Location</th>
+                <td>{{ branch1.college.location }}</td>
+                <td>{{ branch2.college.location }}</td>
+            </tr>
+            <tr>
+                <th scope="row">State</th>
+                <td>{{ branch1.college.state }}</td>
+                <td>{{ branch2.college.state }}</td>
+            </tr>
+        </tbody>
     </table>
+</div>
 
-    <br>
+<p class="form-foot">
+    <a href="{{ url_for('comparison.compare') }}">← Compare another pair</a>
+</p>
 
-    <a href="/compare">← Compare Another Pair</a>
-
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Saved Colleges — College Predictor{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <p class="eyebrow">Your shortlist</p>
+    <h1>Saved colleges</h1>
+</div>
+
+{% if colleges %}
+<div class="item-list">
+    {% for saved in colleges %}
+    <div class="item-row">
+        <div class="item-main">
+            <a href="{{ url_for('college.college_details', college_id=saved.college.id) }}">{{ saved.college.name }}</a>
+        </div>
+        <div class="item-actions">
+            <a class="danger" href="{{ url_for('saved.remove_saved', saved_id=saved.id) }}">Remove</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">No saved colleges.</div>
+{% endif %}
+
+<p class="form-foot">
+    <a href="{{ url_for('dashboard.dashboard') }}">← Back to dashboard</a>
+</p>
+
+{% endblock %}

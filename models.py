@@ -1,6 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 
+from datetime import datetime, UTC
+
 db = SQLAlchemy()
 
 class User(UserMixin, db.Model):
@@ -10,8 +12,49 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     
+    prediction_history = db.relationship('PredictionHistory', backref='user', lazy=True)
+    saved_colleges = db.relationship("SavedCollege", backref="user", lazy=True)
+    comparison_history = db.relationship("ComparisonHistory", backref="user", lazy=True)
+    
     def __repr__(self):
         return f"<User {self.username}>"
+
+
+class PredictionHistory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    exam_id = db.Column(db.Integer, db.ForeignKey("exam.id"), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey("category.id"), nullable=False)
+    quota_id = db.Column(db.Integer, db.ForeignKey("quota.id"), nullable=False)
+    rank = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    exam = db.relationship("Exam")
+    category = db.relationship("Category")
+    quota = db.relationship("Quota")
+
+    def __repr__(self):
+        return f"<PredictionHistory {self.rank}>"
+
+
+class SavedCollege(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    college_id = db.Column(db.Integer, db.ForeignKey("college.id"), nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    college = db.relationship("College")
+
+
+class ComparisonHistory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    branch1_id = db.Column(db.Integer, db.ForeignKey("branch.id"), nullable=False)
+    branch2_id = db.Column(db.Integer, db.ForeignKey("branch.id"), nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    branch1 = db.relationship("Branch", foreign_keys=[branch1_id])
+    branch2 = db.relationship("Branch", foreign_keys=[branch2_id])
     
 
 class College(db.Model): #Information about institutions
@@ -112,3 +155,24 @@ class Cutoff(db.Model): #Actual admission eligibility data
 
     def __repr__(self):
         return (f"<Cutoff " f"Year:{self.year} " f"Rank:{self.closing_rank}>")
+
+
+class Conversation(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
+
+    messages = db.relationship(
+        "Message",
+        backref="conversation",
+        lazy=True,
+        order_by="Message.id"
+    )
+
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    conversation_id = db.Column(db.Integer, db.ForeignKey("conversation.id"), nullable=False)
+    role = db.Column(db.String(20), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))

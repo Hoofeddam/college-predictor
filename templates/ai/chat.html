@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}AI Counselor — College Predictor{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <p class="eyebrow">AI Counselor</p>
+    <h1>Ask about colleges, cutoffs and counselling</h1>
+    <p>Ask about eligibility, branch comparisons, recommendations, or JoSAA/CSAB counselling rules.</p>
+</div>
+
+<div class="chat-box">
+
+    {% if messages %}
+
+        {% for message in messages %}
+        <div class="message {{ message.role }}">
+            <div class="bubble">{{ message.content|safe }}</div>
+        </div>
+        {% endfor %}
+
+    {% else %}
+
+        <div class="message assistant">
+            <div class="bubble">
+                I'm your AI college counselor. I can help with:
+                <ul>
+                    <li>College prediction based on your rank</li>
+                    <li>Branch and college comparisons</li>
+                    <li>Recommendations by budget, branch or location</li>
+                    <li>JoSAA and CSAB counselling rules</li>
+                </ul>
+                What would you like to know?
+            </div>
+        </div>
+
+    {% endif %}
+
+</div>
+
+<form class="chat-form" method="POST">
+    <textarea name="message" rows="3" placeholder="Ask me anything about engineering colleges..." required></textarea>
+    <button type="submit" class="btn btn-primary">Send</button>
+</form>
+
+{% endblock %}

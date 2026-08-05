@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}College Predictor{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+{% block head %}{% endblock %}
+</head>
+<body>
+
+<header class="site-header">
+    <div class="site-header-inner">
+        <a class="wordmark" href="{{ url_for('dashboard.dashboard') if current_user.is_authenticated else url_for('auth.login') }}">College Predictor</a>
+
+        {% if current_user.is_authenticated %}
+        <nav class="site-nav">
+            <a href="{{ url_for('predictor.home') }}" class="{{ 'active' if request.path == url_for('predictor.home') }}">Predict</a>
+            <a href="{{ url_for('comparison.compare') }}" class="{{ 'active' if request.path.startswith('/compare') }}">Compare</a>
+            <a href="{{ url_for('saved.saved_colleges') }}" class="{{ 'active' if request.path.startswith('/saved') }}">Saved</a>
+            <a href="{{ url_for('ai.ai') }}" class="{{ 'active' if request.path.startswith('/ai') }}">AI Counselor</a>
+            <a href="{{ url_for('dashboard.dashboard') }}" class="{{ 'active' if request.path.startswith('/dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('profile.profile') }}" class="{{ 'active' if request.path.startswith('/profile') }}">Profile</a>
+            <a href="{{ url_for('auth.logout') }}">Logout</a>
+        </nav>
+        {% endif %}
+    </div>
+</header>
+
+<main class="site-main {% block main_class %}{% endblock %}">
+    {% block content %}{% endblock %}
+</main>
+
+</body>
+</html>

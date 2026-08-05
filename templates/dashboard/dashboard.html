@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — College Predictor{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <p class="eyebrow">Dashboard</p>
+    <h1>Welcome, {{ user.username }}</h1>
+    <p>{{ user.email }}</p>
+</div>
+
+<div class="section">
+    <div class="quick-actions">
+        <a class="btn btn-primary" href="{{ url_for('predictor.home') }}">Predict Colleges</a>
+        <a class="btn btn-secondary" href="{{ url_for('comparison.compare') }}">Compare Colleges</a>
+        <a class="btn btn-secondary" href="{{ url_for('saved.saved_colleges') }}">Saved Colleges</a>
+        <a class="btn btn-secondary" href="{{ url_for('ai.ai') }}">AI Counselor</a>
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-head">
+        <h2>Recent Predictions</h2>
+    </div>
+
+    {% if predictions %}
+    <div class="item-list">
+        {% for prediction in predictions %}
+        <div class="item-row">
+            <div class="item-main">
+                <span class="tag">{{ prediction.exam.name }}</span>
+                <span class="tag">{{ prediction.category.name }}</span>
+                <span class="tag">{{ prediction.quota.name }}</span>
+                <span class="tag tag-brass data">Rank {{ prediction.rank }}</span>
+            </div>
+            <div class="item-actions">
+                <a href="{{ url_for('predictor.predict_again', prediction_id=prediction.id) }}">Predict again</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">No predictions yet.</div>
+    {% endif %}
+</div>
+
+<div class="section">
+    <div class="section-head">
+        <h2>Saved Colleges</h2>
+    </div>
+
+    {% if saved_colleges %}
+    <div class="item-list">
+        {% for saved in saved_colleges %}
+        <div class="item-row">
+            <div class="item-main">
+                <a href="{{ url_for('college.college_details', college_id=saved.college.id) }}">{{ saved.college.name }}</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">No saved colleges.</div>
+    {% endif %}
+</div>
+
+<div class="section">
+    <div class="section-head">
+        <h2>Recent Comparisons</h2>
+    </div>
+
+    {% if comparisons %}
+    <div class="item-list">
+        {% for comparison in comparisons %}
+        <div class="item-row">
+            <div class="item-main">
+                {{ comparison.branch1.college.name }} ({{ comparison.branch1.branch_name }})
+                <span class="meta">vs</span>
+                {{ comparison.branch2.college.name }} ({{ comparison.branch2.branch_name }})
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">No comparisons yet.</div>
+    {% endif %}
+</div>
+
+{% endblock %}

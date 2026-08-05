@@ -1,80 +1,64 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ college.name }}</title>
-</head>
+{% extends "base.html" %}
 
-<body style="font-family: Arial; max-width: 900px; margin: auto;">
+{% block title %}{{ college.name }} — College Predictor{% endblock %}
 
+{% block content %}
+
+<div class="page-header">
+    <p class="eyebrow">{{ college.state }}</p>
     <h1>{{ college.name }}</h1>
+    <p>{{ college.location }}, {{ college.state }}</p>
+</div>
 
-    <p>
-        <strong>Location:</strong>
-        {{ college.location }}
-    </p>
+<div class="stat-grid stat-grid-flush">
+    <div>
+        <p class="stat-label">NIRF Rank</p>
+        <p class="stat-value accent">{{ college.nirf_rank }}</p>
+    </div>
+    <div>
+        <p class="stat-label">Fees</p>
+        <p class="stat-value">₹{{ college.fees }}</p>
+    </div>
+    <div>
+        <p class="stat-label">Hostel Fees</p>
+        <p class="stat-value">₹{{ college.hostel_fees }}</p>
+    </div>
+    <div>
+        <p class="stat-label">Website</p>
+        <p class="stat-value"><a href="{{ college.website }}" target="_blank" rel="noopener">Visit ↗</a></p>
+    </div>
+</div>
 
-    <p>
-        <strong>State:</strong>
-        {{ college.state }}
-    </p>
+<div class="section">
+    <div class="section-head">
+        <h2>Branches</h2>
+    </div>
 
-    <p>
-        <strong>NIRF Rank:</strong>
-        {{ college.nirf_rank }}
-    </p>
-
-    <p>
-        <strong>Fees:</strong>
-        ₹{{ college.fees }}
-    </p>
-
-    <p>
-        <strong>Hostel Fees:</strong>
-        ₹{{ college.hostel_fees }}
-    </p>
-
-    <p>
-        <strong>Website:</strong>
-        <a href="{{ college.website }}" target="_blank">
-            Visit Website
-        </a>
-    </p>
-
-    <hr>
-
-    <h2>Branches</h2>
-
-    {% for branch in college.branches %}
-
-        <div style="
-            border:1px solid #ddd;
-            padding:15px;
-            margin-bottom:15px;
-            border-radius:10px;
-        ">
-
+    <div class="result-list">
+        {% for branch in college.branches %}
+        <div class="card">
             <h3>{{ branch.branch_name }}</h3>
-
-            <p>
-                Avg Package:
-                {{ branch.avg_package }} LPA
-            </p>
-
-            <p>
-                Median Package:
-                {{ branch.median_package }} LPA
-            </p>
-
-            <p>
-                Placement Rate:
-                {{ branch.placement_rate }}%
-            </p>
-
+            <div class="stat-grid">
+                <div>
+                    <p class="stat-label">Avg Package</p>
+                    <p class="stat-value">{{ branch.avg_package }} LPA</p>
+                </div>
+                <div>
+                    <p class="stat-label">Median Package</p>
+                    <p class="stat-value">{{ branch.median_package }} LPA</p>
+                </div>
+                <div>
+                    <p class="stat-label">Placement Rate</p>
+                    <p class="stat-value">{{ branch.placement_rate }}%</p>
+                </div>
+            </div>
         </div>
+        {% endfor %}
+    </div>
+</div>
 
-    {% endfor %}
+<p class="form-foot">
+    <a href="{{ url_for('predictor.home') }}">← Back home</a>
+</p>
 
-    <a href="/">← Back Home</a>
-
-</body>
-</html>
+{% endblock %}

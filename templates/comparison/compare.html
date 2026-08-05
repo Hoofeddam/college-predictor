@@ -1,51 +1,41 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Compare Branches</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-    <h1>Compare Branches</h1>
+{% block title %}Compare Branches — College Predictor{% endblock %}
 
-    <form action="/compare-result">
+{% block main_class %}narrow{% endblock %}
 
-        <label>Branch 1:</label>
+{% block content %}
 
-        <select name="branch1">
+<div class="page-header">
+    <p class="eyebrow">Branch comparison</p>
+    <h1>Compare two branches</h1>
+    <p>See average package, placement rate, fees and NIRF rank side by side.</p>
+</div>
 
-            {% for branch in branches %}
+<div class="form-card">
+    <form action="{{ url_for('comparison.compare_result') }}">
 
-                <option value="{{ branch.id }}">
-                    {{ branch.college.name }} - {{ branch.branch_name }}
-                </option>
+        <div class="field">
+            <label for="branch1">First branch</label>
+            <select id="branch1" name="branch1">
+                {% for branch in branches %}
+                <option value="{{ branch.id }}">{{ branch.college.name }} — {{ branch.branch_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-            {% endfor %}
+        <div class="field">
+            <label for="branch2">Second branch</label>
+            <select id="branch2" name="branch2">
+                {% for branch in branches %}
+                <option value="{{ branch.id }}">{{ branch.college.name }} — {{ branch.branch_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-        </select>
-
-        <br><br>
-
-        <label>Branch 2:</label>
-
-        <select name="branch2">
-
-            {% for branch in branches %}
-
-                <option value="{{ branch.id }}">
-                    {{ branch.college.name }} - {{ branch.branch_name }}
-                </option>
-
-            {% endfor %}
-
-        </select>
-
-        <br><br>
-
-        <button type="submit">
-            Compare
-        </button>
+        <button type="submit" class="btn btn-primary btn-block">Compare</button>
 
     </form>
+</div>
 
-</body>
-</html>
+{% endblock %}
