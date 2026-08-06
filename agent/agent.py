@@ -5,6 +5,8 @@ from agent.parser import parse_response
 from agent.executor import execute_action
 from tools.tool_registry import get_tool_descriptions
 
+from response_blocks import build_blocks_for_tool
+
 
 def run_agent(
     user_message,
@@ -53,6 +55,8 @@ def run_agent(
         }
     )
 
+    blocks = []
+
     while True:
 
         response = chat(messages)
@@ -67,9 +71,17 @@ def run_agent(
             return action
 
         if action["type"] == "final":
-            return action["answer"]
+            return {
+                "type": "final",
+                "text": action["answer"],
+                "blocks": blocks
+            }
+
+        tool_name = action["tool"]
 
         tool_result = execute_action(action)
+
+        blocks.extend(build_blocks_for_tool(tool_name, tool_result))
 
         messages.append(
             {

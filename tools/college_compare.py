@@ -20,7 +20,13 @@ TOOLS["compare_colleges"] = {
     "function": compare_colleges,
 
     "description":
-        "Compare two engineering colleges or branches.",
+        "Compare two engineering colleges or branches. Returns a dict with "
+        "a \"status\" field: \"ok\" (comparison data is in branch_1/branch_2), "
+        "\"not_found\" (a college or branch name in \"query\" did not match "
+        "anything — ask the user to confirm the name, do not guess), or "
+        "\"ambiguous\" (the name in \"query\" matched more than one college, "
+        "listed in \"candidates\" — list them for the user and ask which one "
+        "they meant, do not guess).",
 
     "parameters": {
 

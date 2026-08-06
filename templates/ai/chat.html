@@ -2,46 +2,84 @@
 
 {% block title %}AI Counselor — College Predictor{% endblock %}
 
+{% block body_class %}chat-page{% endblock %}
+
+{% block main_class %}chat-shell{% endblock %}
+
 {% block content %}
 
-<div class="page-header">
-    <p class="eyebrow">AI Counselor</p>
-    <h1>Ask about colleges, cutoffs and counselling</h1>
-    <p>Ask about eligibility, branch comparisons, recommendations, or JoSAA/CSAB counselling rules.</p>
-</div>
+<div class="chat-layout">
 
-<div class="chat-box">
+    <div class="chat-sidebar-backdrop" id="sidebarBackdrop"></div>
 
-    {% if messages %}
-
-        {% for message in messages %}
-        <div class="message {{ message.role }}">
-            <div class="bubble">{{ message.content|safe }}</div>
+    <aside class="chat-sidebar" id="chatSidebar">
+        <div class="chat-sidebar-header">
+            <button type="button" class="btn btn-secondary btn-block" id="newChatButton">+ New Chat</button>
+            <div class="field">
+                <input type="search" id="conversationSearch" placeholder="Search conversations…" aria-label="Search conversations">
+            </div>
         </div>
-        {% endfor %}
+        <div class="item-list" id="conversationList"></div>
+    </aside>
 
-    {% else %}
+    <div class="chat-main">
 
-        <div class="message assistant">
-            <div class="bubble">
-                I'm your AI college counselor. I can help with:
-                <ul>
-                    <li>College prediction based on your rank</li>
-                    <li>Branch and college comparisons</li>
-                    <li>Recommendations by budget, branch or location</li>
-                    <li>JoSAA and CSAB counselling rules</li>
-                </ul>
-                What would you like to know?
+        <button type="button" class="chat-sidebar-toggle" id="sidebarToggle" aria-expanded="false" aria-controls="chatSidebar">
+            ☰ Conversations
+        </button>
+
+        {% if not messages %}
+        <div class="page-header" id="chatPageHeader">
+            <p class="eyebrow">AI Counselor</p>
+            <h1>Ask about colleges, cutoffs and counselling</h1>
+            <p>Ask about eligibility, branch comparisons, recommendations, or JoSAA/CSAB counselling rules.</p>
+        </div>
+        {% endif %}
+
+        <div class="chat-scroll" id="chatScroll" data-conversation-id="{{ conversation_id or '' }}">
+            <div class="chat-box" id="chatBox" role="log" aria-live="polite" aria-relevant="additions">
+
+                {% if messages %}
+
+                    {% for message in messages %}
+                    <div class="message {{ message.role }}">
+                        <div class="bubble">{{ message.content|safe }}</div>
+                    </div>
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="message assistant" data-placeholder="true">
+                        <div class="bubble">
+                            I'm your AI college counselor. I can help with:
+                            <ul>
+                                <li>College prediction based on your rank</li>
+                                <li>Branch and college comparisons</li>
+                                <li>Recommendations by budget, branch or location</li>
+                                <li>JoSAA and CSAB counselling rules</li>
+                            </ul>
+                            What would you like to know?
+                        </div>
+                    </div>
+
+                {% endif %}
+
             </div>
         </div>
 
-    {% endif %}
+        <div id="chatStatus" class="sr-only" role="status" aria-live="polite"></div>
+
+        <form class="chat-form" method="POST" action="{{ url_for('ai.ai') }}" id="chatForm">
+            <textarea name="message" id="chatMessageInput" rows="3" placeholder="Ask me anything about engineering colleges..." required></textarea>
+            <button type="submit" class="btn btn-primary" id="chatSendButton">Send</button>
+        </form>
+
+    </div>
 
 </div>
 
-<form class="chat-form" method="POST">
-    <textarea name="message" rows="3" placeholder="Ask me anything about engineering colleges..." required></textarea>
-    <button type="submit" class="btn btn-primary">Send</button>
-</form>
+<script src="{{ url_for('static', filename='js/conversations.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/blocks.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/chat.js') }}" defer></script>
 
 {% endblock %}

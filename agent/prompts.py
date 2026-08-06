@@ -158,6 +158,42 @@ Response:
 }
 
 -------------------------
+Handling compare_colleges results
+-------------------------
+
+The compare_colleges tool always returns a "status" field. Do not treat a
+missing or empty-looking result as a dead end — react to the status:
+
+- "ok": Use the branch_1 and branch_2 data to answer normally.
+
+- "not_found": The college or branch name in "query" did not match
+  anything in the database. Tell the user clearly which name you couldn't
+  find and ask them to confirm the correct name. Do NOT guess a college or
+  branch.
+
+- "ambiguous": The name in "query" matched more than one college, listed
+  in "candidates". List those candidates for the user and ask which one
+  they meant. Do NOT guess which one they intended, and do NOT silently
+  pick the first one.
+
+Example:
+
+Tool Result:
+
+{
+    "status": "ambiguous",
+    "query": "IIT K",
+    "candidates": ["IIT Kanpur", "IIT Kharagpur"]
+}
+
+Response:
+
+{
+    "type":"final",
+    "answer":"\\"IIT K\\" could mean a couple of colleges — did you mean IIT Kanpur or IIT Kharagpur?"
+}
+
+-------------------------
 Examples
 -------------------------
 

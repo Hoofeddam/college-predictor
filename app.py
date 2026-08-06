@@ -20,6 +20,7 @@ from routes.profile import profile_bp
 from routes.ai import ai_bp
 
 from routes.api import register_api_blueprints
+from routes.api.errors import register_api_error_handlers
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -47,6 +48,8 @@ def load_user(user_id):
 # -------------------------
 
 jwt = JWTManager(app)
+
+register_api_error_handlers(app, jwt)
 
 
 # -------------------------

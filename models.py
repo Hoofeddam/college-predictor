@@ -160,13 +160,17 @@ class Cutoff(db.Model): #Actual admission eligibility data
 class Conversation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    title = db.Column(db.String(255), nullable=True)
+    title_is_custom = db.Column(db.Boolean, nullable=False, default=False)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
+    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
 
     messages = db.relationship(
         "Message",
         backref="conversation",
         lazy=True,
-        order_by="Message.id"
+        order_by="Message.id",
+        cascade="all, delete-orphan"
     )
 
 

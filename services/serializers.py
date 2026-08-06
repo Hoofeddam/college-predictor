@@ -99,7 +99,13 @@ def serialize_message(message):
 def serialize_conversation(conversation, include_messages=False):
     data = {
         "id": conversation.id,
-        "created_at": conversation.created_at.isoformat() if conversation.created_at else None
+        "title": conversation.title or "Untitled conversation",
+        "title_is_custom": conversation.title_is_custom,
+        "created_at": conversation.created_at.isoformat() if conversation.created_at else None,
+        "updated_at": conversation.updated_at.isoformat() if conversation.updated_at else None
+        # A future "last_message_preview" field would be added here as one
+        # more key (computed via a join/subquery in list_conversations),
+        # without changing this shape — deliberately deferred for now.
     }
 
     if include_messages:

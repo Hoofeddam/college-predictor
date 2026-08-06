@@ -369,6 +369,11 @@ hr.divider {
   width: 100%;
 }
 
+.btn-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .btn {
     transition: none;
@@ -652,6 +657,11 @@ table.compare tr:last-child th {
   color: var(--ink-muted);
 }
 
+.empty-state.error {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
 .alert {
   border-radius: var(--radius-sm);
   padding: var(--sp-3) var(--sp-4);
@@ -682,6 +692,7 @@ table.compare tr:last-child th {
 
 .message {
   display: flex;
+  min-width: 0;
 }
 
 .message.user {
@@ -689,40 +700,217 @@ table.compare tr:last-child th {
 }
 
 .message.assistant {
-  justify-content: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .bubble {
   max-width: 72%;
+  min-width: 0;
   padding: 14px 16px;
   border-radius: var(--radius-md);
   line-height: 1.6;
   font-size: 0.9375rem;
 }
 
-.bubble p {
-  margin-bottom: var(--sp-2);
+/* Uniform spacing for every rendered markdown block, so headings,
+   tables, lists, quotes and code blocks all breathe consistently
+   without needing a rule per element type. */
+.bubble > * {
+  margin: 0 0 var(--sp-3);
   max-width: none;
 }
 
-.bubble p:last-child,
-.bubble ul:last-child {
+.bubble > *:last-child {
   margin-bottom: 0;
 }
 
-.bubble ul {
-  margin: 0 0 var(--sp-2);
+.bubble h1,
+.bubble h2,
+.bubble h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.bubble h4,
+.bubble h5,
+.bubble h6 {
+  font-family: var(--font-body);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.bubble h1 {
+  font-size: 1.25rem;
+}
+
+.bubble h2 {
+  font-size: 1.125rem;
+}
+
+.bubble h3 {
+  font-size: 1.0625rem;
+}
+
+.bubble h4,
+.bubble h5,
+.bubble h6 {
+  font-size: 1rem;
+}
+
+.bubble ul,
+.bubble ol {
   padding-left: 1.25em;
+}
+
+.bubble li {
+  margin-bottom: 4px;
+}
+
+.bubble li:last-child {
+  margin-bottom: 0;
+}
+
+.bubble li > ul,
+.bubble li > ol {
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+.bubble blockquote {
+  border-left: 3px solid var(--line-strong);
+  padding-left: var(--sp-3);
+  color: var(--ink-muted);
+}
+
+.bubble blockquote > *:last-child {
+  margin-bottom: 0;
+}
+
+.bubble code {
+  font-family: var(--font-data);
+  font-size: 0.875em;
+  background: rgba(125, 133, 145, 0.18);
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+
+.bubble pre {
+  font-family: var(--font-data);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: var(--sp-3);
+  overflow-x: auto;
+}
+
+.bubble pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+.bubble table {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  background: var(--surface);
+}
+
+.bubble th,
+.bubble td {
+  text-align: left;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+}
+
+.bubble th {
+  font-weight: 600;
+}
+
+.bubble hr {
+  border: none;
+  border-top: 1px solid var(--line-strong);
 }
 
 .message.user .bubble {
   background: var(--navy);
   color: #fff;
+  white-space: pre-wrap;
 }
 
 .message.assistant .bubble {
   background: var(--navy-tint);
   color: var(--ink);
+}
+
+.bubble.error {
+  background: var(--danger-tint);
+  color: var(--danger);
+}
+
+.message-actions {
+  margin-top: var(--sp-2);
+}
+
+/* Visually hidden but still readable by screen readers -- used for the
+   shared #chatStatus live region (typing / copy-confirmation announcements). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.bubble.typing-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 16px;
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink-muted);
+  animation: chat-typing-bounce 1.2s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes chat-typing-bounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typing-dot {
+    animation: none;
+  }
 }
 
 .chat-form {
@@ -750,8 +938,63 @@ table.compare tr:last-child th {
   border-color: var(--brass);
 }
 
+.chat-form textarea:disabled,
+.chat-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .chat-form .btn {
   flex-shrink: 0;
+}
+
+/* ---------- 12b. AI chat — fixed shell layout ----------
+   Scoped to body.chat-page / .chat-shell only. The rest of the
+   site keeps the normal scrolling document layout untouched. */
+
+body.chat-page {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+body.chat-page .site-header {
+  flex-shrink: 0;
+}
+
+.site-main.chat-shell {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: var(--sp-5);
+  overflow: hidden;
+}
+
+.site-main.chat-shell .page-header {
+  flex-shrink: 0;
+}
+
+.chat-scroll {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow-y: auto;
+}
+
+.chat-shell .chat-box {
+  min-height: 100%;
+}
+
+.chat-shell .chat-form {
+  flex-shrink: 0;
+  margin-top: 0;
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line);
 }
 
 /* ---------- 13. Responsive ---------- */
@@ -771,5 +1014,247 @@ table.compare tr:last-child th {
 
   .chat-form .btn {
     width: 100%;
+  }
+
+  .site-main.chat-shell {
+    padding: var(--sp-4);
+  }
+
+  .block-comparison-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- 14. AI chat — structured response blocks ----------
+   All three card types (recommendation, prediction, comparison) share the
+   app's existing .card/.result-*/.stat-grid design system rather than
+   defining their own visual language. #chatBox is already a flex column
+   with `gap`, so a card appended as a direct child gets consistent
+   spacing for free. */
+
+.block-card {
+  max-width: 100%;
+}
+
+.block-comparison-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+  margin-top: var(--sp-3);
+}
+
+/* Expandable "Fees & more" section, shared by all three card types.
+   Reuses the existing .stat-grid family for its contents. */
+
+.block-details {
+  margin-top: var(--sp-4);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line);
+}
+
+.block-details summary {
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--navy);
+  list-style: none;
+}
+
+.block-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.block-details summary::before {
+  content: "▸";
+  display: inline-block;
+  margin-right: 6px;
+  transition: transform 120ms ease;
+}
+
+.block-details[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.block-details summary:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 2px;
+}
+
+.block-details .stat-grid {
+  margin-top: var(--sp-4);
+  padding-top: 0;
+  border-top: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .block-details summary::before {
+    transition: none;
+  }
+}
+
+/* ---------- 15. AI chat — conversation sidebar ----------
+   Scoped to .chat-layout / .chat-sidebar / .chat-main, all only present
+   on the chat page. .chat-shell itself is untouched — .chat-layout is
+   just its one child, still flex:1/min-height:0 as before. */
+
+.chat-layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  gap: var(--sp-5);
+}
+
+.chat-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  overflow-y: auto;
+  padding-right: var(--sp-4);
+  border-right: 1px solid var(--line);
+}
+
+.chat-sidebar-header {
+  flex-shrink: 0;
+}
+
+.chat-main {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-sidebar-toggle {
+  display: none;
+}
+
+.chat-sidebar-backdrop {
+  display: none;
+}
+
+.conversation-row {
+  cursor: pointer;
+}
+
+.conversation-row-main {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.conversation-row-main a {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.conversation-row.is-active {
+  background: var(--navy-tint);
+}
+
+.conversation-row.is-active .item-main a {
+  color: var(--navy);
+}
+
+.conversation-row-actions {
+  flex-shrink: 0;
+}
+
+.conversation-row-actions button {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+
+.conversation-row-actions button:hover {
+  color: var(--navy);
+}
+
+.conversation-row-actions button.danger {
+  color: var(--danger);
+}
+
+.conversation-row-actions button.danger:hover {
+  color: var(--danger);
+  text-decoration: underline;
+}
+
+.conversation-rename-input {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--brass);
+  border-radius: var(--radius-sm);
+  padding: 4px 6px;
+}
+
+.conversation-rename-input:focus {
+  outline: 2px solid var(--brass);
+  outline-offset: 1px;
+}
+
+@media (max-width: 768px) {
+
+  .chat-sidebar-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    align-self: flex-start;
+    margin-bottom: var(--sp-4);
+    background: none;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .chat-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 82%;
+    max-width: 300px;
+    background: var(--surface);
+    z-index: 60;
+    padding: var(--sp-5);
+    border-right: 1px solid var(--line);
+    box-shadow: var(--shadow-card);
+    transform: translateX(-100%);
+    transition: transform 180ms ease;
+  }
+
+  .chat-sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .chat-sidebar-backdrop.is-visible {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 32, 0.4);
+    z-index: 55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-sidebar {
+    transition: none;
   }
 }
