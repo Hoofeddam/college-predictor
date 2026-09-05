@@ -3,6 +3,7 @@ from models import (
     Exam,
     Category,
     Quota,
+    CounsellingRound,
     Cutoff
 )
 
@@ -19,7 +20,34 @@ def _find_by_name_ci(model, name):
     ).first()
 
 
-def search_colleges(exam_name, category_name, quota_name, rank):
+def get_latest_dataset(exam_id):
+    """Returns the (year, round_no) of the most recently imported official
+    counselling dataset for this exam, or None if this exam has no cutoff
+    data at all. Scoped per exam rather than computed globally, so JEE
+    Advanced and JEE Main (or a future exam) each resolve to their own
+    latest year/round even if one is imported ahead of the other.
+
+    Deliberately computed from the data itself (highest year, then highest
+    round_no within that year) instead of an "is_current" flag maintained
+    by whoever runs an import -- nothing to remember to update, and a new
+    yearly/round import becomes "the default" the moment it's committed.
+    """
+    return (
+        db.session.query(Cutoff.year, CounsellingRound.round_no)
+        .join(CounsellingRound, Cutoff.round_id == CounsellingRound.id)
+        .filter(Cutoff.exam_id == exam_id)
+        .order_by(Cutoff.year.desc(), CounsellingRound.round_no.desc())
+        .first()
+    )
+
+
+def search_colleges(exam_name, category_name, quota_name, rank, year=None, round_no=None):
+    """year/round_no are optional. When omitted (every current caller),
+    the search resolves to the latest available dataset for the given exam
+    -- see get_latest_dataset(). Passing them explicitly targets a specific
+    past dataset instead, for future historical/comparison features;
+    nothing about past years is deleted or hidden by the default behavior.
+    """
 
     exam_name = normalize_exam(exam_name)
     category_name = normalize_category(category_name)
@@ -33,6 +61,35 @@ def search_colleges(exam_name, category_name, quota_name, rank):
             "exam": None,
             "category": None,
             "quota": None,
+            "year": None,
+            "round": None,
+            "results": []
+        }
+
+    if year is None or round_no is None:
+        latest = get_latest_dataset(exam.id)
+        if latest is None:
+            return {
+                "exam": exam,
+                "category": category,
+                "quota": quota,
+                "year": None,
+                "round": None,
+                "results": []
+            }
+        if year is None:
+            year = latest[0]
+        if round_no is None:
+            round_no = latest[1]
+
+    round_row = CounsellingRound.query.filter_by(round_no=round_no).first()
+    if round_row is None:
+        return {
+            "exam": exam,
+            "category": category,
+            "quota": quota,
+            "year": year,
+            "round": round_no,
             "results": []
         }
 
@@ -40,6 +97,8 @@ def search_colleges(exam_name, category_name, quota_name, rank):
         Cutoff.exam_id == exam.id,
         Cutoff.category_id == category.id,
         Cutoff.quota_id == quota.id,
+        Cutoff.round_id == round_row.id,
+        Cutoff.year == year,
         Cutoff.closing_rank >= rank
     ).order_by(
         Cutoff.closing_rank.asc()
@@ -74,5 +133,7 @@ def search_colleges(exam_name, category_name, quota_name, rank):
         "exam": exam,
         "category": category,
         "quota": quota,
+        "year": year,
+        "round": round_no,
         "results": results
     }

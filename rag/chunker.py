@@ -24,7 +24,8 @@ def chunk_text(
 
         else:
 
-            chunks.append(current_chunk.strip())
+            if current_chunk:
+                chunks.append(current_chunk.strip())
 
             current_chunk = paragraph + "\n\n"
 
